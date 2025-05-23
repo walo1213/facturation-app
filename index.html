@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Facturation">
     <title>Facturation Perso</title>
     <style>
         * {
@@ -16,6 +19,8 @@
             background: #f2f2f7;
             color: #333;
             line-height: 1.6;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .app {
@@ -51,10 +56,11 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .btn:hover {
-            opacity: 0.8;
+        .btn:active {
+            opacity: 0.7;
         }
 
         .btn-outline {
@@ -91,6 +97,7 @@
             position: relative;
             cursor: pointer;
             transition: 0.3s;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .toggle.active {
@@ -121,14 +128,19 @@
         }
 
         .nav-btn {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border: none;
             background: #007AFF;
             color: white;
-            border-radius: 18px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 18px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-btn:active {
+            opacity: 0.7;
         }
 
         .month-title {
@@ -144,27 +156,34 @@
 
         .selector {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
             background: white;
+            font-size: 16px;
         }
 
         .chips {
             display: flex;
             gap: 8px;
             overflow-x: auto;
+            padding-bottom: 8px;
         }
 
         .chip {
             background: #f0f0f0;
             color: #666;
-            padding: 6px 12px;
-            border-radius: 16px;
+            padding: 8px 16px;
+            border-radius: 20px;
             font-size: 12px;
             white-space: nowrap;
             cursor: pointer;
             border: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .chip:active {
+            opacity: 0.7;
         }
 
         .chip.active {
@@ -174,21 +193,21 @@
 
         .content {
             padding: 16px;
-            padding-bottom: 80px;
+            padding-bottom: 100px;
         }
 
         .summary {
             background: white;
-            padding: 16px;
+            padding: 20px;
             border-radius: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .summary-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .stats {
@@ -198,12 +217,13 @@
 
         .stat {
             text-align: center;
+            flex: 1;
         }
 
         .stat-value {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .stat-label {
@@ -229,25 +249,26 @@
             padding: 16px;
             border-bottom: 1px solid #f0f0f0;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .transaction:last-child, .category-item:last-child {
             border-bottom: none;
         }
 
-        .transaction:hover, .category-item:hover {
+        .transaction:active, .category-item:active {
             background: #f8f8f8;
         }
 
         .icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
-            font-size: 18px;
+            margin-right: 16px;
+            font-size: 20px;
             color: white;
         }
 
@@ -258,6 +279,7 @@
         .name {
             font-weight: 600;
             margin-bottom: 4px;
+            font-size: 16px;
         }
 
         .date {
@@ -272,12 +294,13 @@
         .value {
             font-weight: 600;
             margin-bottom: 4px;
+            font-size: 16px;
         }
 
         .status {
             font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 8px;
+            padding: 3px 8px;
+            border-radius: 10px;
             color: white;
         }
 
@@ -291,17 +314,23 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 414px;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .tab {
             flex: 1;
             text-align: center;
-            padding: 10px 8px;
+            padding: 12px 8px;
             color: #666;
             cursor: pointer;
             font-size: 10px;
             border: none;
             background: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tab:active {
+            opacity: 0.7;
         }
 
         .tab.active {
@@ -309,54 +338,61 @@
         }
 
         .tab-icon {
-            font-size: 20px;
-            margin-bottom: 2px;
+            font-size: 22px;
+            margin-bottom: 4px;
         }
 
         .floating-btn {
             position: fixed;
-            bottom: 90px;
+            bottom: 100px;
             right: 20px;
-            width: 56px;
-            height: 56px;
+            width: 60px;
+            height: 60px;
             background: #007AFF;
-            border-radius: 28px;
+            border-radius: 30px;
             border: none;
             color: white;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             box-shadow: 0 4px 16px rgba(0,122,255,0.4);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .floating-btn:active {
+            transform: scale(0.95);
         }
 
         .form-section {
             background: white;
             border-radius: 12px;
-            padding: 16px;
+            padding: 20px;
             margin-bottom: 16px;
         }
 
         .form-title {
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            font-size: 18px;
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 500;
             color: #333;
         }
 
         .input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
+            -webkit-appearance: none;
         }
 
         .input:focus {
@@ -382,28 +418,80 @@
         .color-picker {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
+            gap: 10px;
+            margin-top: 12px;
         }
 
         .color-option {
-            width: 30px;
-            height: 30px;
-            border-radius: 15px;
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .color-option:active {
+            transform: scale(0.9);
         }
 
         .color-option.selected {
             border-color: #007AFF;
         }
+
+        .save-status {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #34C759;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .save-status.show {
+            opacity: 1;
+        }
+
+        .import-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: block;
+            background: #007AFF;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .file-label:active {
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
     <div class="app">
+        <!-- Status de sauvegarde -->
+        <div id="save-status" class="save-status">💾 Sauvegardé !</div>
+
         <!-- Header -->
         <div class="header">
-            <span class="title" id="page-title">Transactions</span>
+            <span class="title" id="page-title">Facturation</span>
             <button class="btn" id="header-btn" onclick="exportData()">📤</button>
         </div>
 
@@ -446,15 +534,239 @@
         let editingTransactionId = null;
         let editingCategoryId = null;
 
-        // DONNÉES AVEC LOCALSTORAGE - PERSISTANCE GARANTIE
-        function loadData() {
-            const savedTransactions = localStorage.getItem('facturation_transactions');
-            const savedCategories = localStorage.getItem('facturation_categories');
+        // Variables pour les données avec sauvegarde fichier + localStorage de secours
+        let transactions = [];
+        let categories = [];
+
+        // SYSTÈME DE SAUVEGARDE HYBRIDE - localStorage + fichier
+        function loadFromLocalStorage() {
+            try {
+                const savedTransactions = localStorage.getItem('facturation_transactions');
+                const savedCategories = localStorage.getItem('facturation_categories');
+                
+                if (savedTransactions) {
+                    transactions = JSON.parse(savedTransactions);
+                    console.log('📱 Transactions chargées depuis localStorage');
+                }
+                
+                if (savedCategories) {
+                    categories = JSON.parse(savedCategories);
+                    console.log('📱 Catégories chargées depuis localStorage');
+                }
+                
+                return savedTransactions && savedCategories;
+            } catch (error) {
+                console.warn('⚠️ localStorage non disponible, mode fichier uniquement');
+                return false;
+            }
+        }
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('facturation_transactions', JSON.stringify(transactions));
+                localStorage.setItem('facturation_categories', JSON.stringify(categories));
+                console.log('💾 Données sauvées dans localStorage');
+            } catch (error) {
+                console.warn('⚠️ Impossible de sauver dans localStorage');
+            }
+        }
+
+        // SYSTÈME DE SAUVEGARDE FICHIER - CORRIGÉ
+        function showSaveStatus() {
+            const status = document.getElementById('save-status');
+            status.classList.add('show');
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 2000);
+        }
+
+        function saveDataToFile() {
+            try {
+                const data = {
+                    transactions: transactions,
+                    categories: categories,
+                    lastSaved: new Date().toISOString(),
+                    version: '1.0'
+                };
+
+                // Créer un fichier de sauvegarde
+                const jsonString = JSON.stringify(data, null, 2);
+                const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `facturation_autosave_${new Date().toISOString().split('T')[0]}.json`;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showSaveStatus();
+                console.log('💾 Données sauvegardées automatiquement');
+                return true;
+            } catch (error) {
+                console.error('❌ Erreur sauvegarde:', error);
+                alert('❌ Erreur lors de la sauvegarde !');
+                return false;
+            }
+        }
+
+        function createBackup() {
+            try {
+                const now = new Date();
+                const timestamp = now.toISOString().replace(/[:.]/g, '-');
+                
+                const data = {
+                    transactions: transactions,
+                    categories: categories,
+                    backup_date: now.toISOString(),
+                    backup_type: 'manual',
+                    version: '1.0',
+                    stats: {
+                        total_transactions: transactions.length,
+                        total_categories: categories.length,
+                        date_range: {
+                            first: transactions.length > 0 ? Math.min(...transactions.map(t => new Date(t.date).getTime())) : null,
+                            last: transactions.length > 0 ? Math.max(...transactions.map(t => new Date(t.date).getTime())) : null
+                        }
+                    }
+                };
+
+                const jsonString = JSON.stringify(data, null, 2);
+                const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `facturation_backup_${timestamp.split('T')[0]}.json`;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('✅ Sauvegarde complète créée !');
+                console.log('📦 Backup créé:', data.stats);
+                return true;
+            } catch (error) {
+                console.error('❌ Erreur backup:', error);
+                alert('❌ Erreur lors de la création du backup !');
+                return false;
+            }
+        }
+
+        function exportExcel() {
+            try {
+                // BOM pour Excel UTF-8
+                let csvContent = '\ufeff';
+                
+                // En-têtes CSV
+                csvContent += 'Date;Catégorie;Type;Montant Prévu;Montant Payé;Statut;Remarques\n';
+                
+                // Données des transactions
+                transactions.forEach(t => {
+                    const row = [
+                        formatDate(t.date),
+                        t.category,
+                        t.type === 'depense' ? 'Dépense' : 'Recette',
+                        t.montantPrevu.toString().replace('.', ','),
+                        t.montantPaye.toString().replace('.', ','),
+                        getStatusName(t.statut),
+                        '' // Remarques vides
+                    ];
+                    csvContent += row.map(field => `"${field}"`).join(';') + '\n';
+                });
+                
+                // Résumé en bas
+                csvContent += '\n';
+                csvContent += 'RÉSUMÉ\n';
+                const summary = calculateSummary(transactions);
+                csvContent += `"Total Recettes";"${summary.recettes.toString().replace('.', ',')} CHF"\n`;
+                csvContent += `"Total Dépenses";"${summary.depenses.toString().replace('.', ',')} CHF"\n`;
+                csvContent += `"Solde Final";"${summary.solde.toString().replace('.', ',')} CHF"\n`;
+                
+                // Créer et télécharger le fichier
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `facturation_export_${new Date().toISOString().split('T')[0]}.csv`;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('✅ Export CSV terminé ! Ouvrez le fichier avec Excel ou Numbers.');
+                console.log('📊 Export CSV créé avec', transactions.length, 'transactions');
+                return true;
+            } catch (error) {
+                console.error('❌ Erreur export Excel:', error);
+                alert('❌ Erreur lors de l\'export Excel !');
+                return false;
+            }
+        }
+
+        function exportData() {
+            const choice = confirm('📤 Format d\'export :\n\nOK = JSON (sauvegarde complète)\nAnnuler = CSV (Excel)');
             
-            if (savedTransactions) {
-                transactions = JSON.parse(savedTransactions);
+            if (choice) {
+                return saveDataToFile();
             } else {
-                // Données par défaut
+                return exportExcel();
+            }
+        }
+
+        function loadDataFromFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.transactions && data.categories) {
+                        transactions = data.transactions;
+                        categories = data.categories;
+                        showTransactions();
+                        alert('✅ Données importées avec succès !');
+                        console.log(`📊 ${transactions.length} transactions et ${categories.length} catégories importées`);
+                    } else {
+                        alert('❌ Fichier JSON invalide ! Vérifiez le format.');
+                    }
+                } catch (error) {
+                    console.error('❌ Erreur import:', error);
+                    alert('❌ Erreur lors de l\'importation ! Fichier corrompu ou format invalide.');
+                }
+            };
+            reader.onerror = function() {
+                alert('❌ Erreur de lecture du fichier !');
+            };
+            reader.readAsText(file, 'utf-8');
+        }
+
+        // Auto-save à chaque modification - CORRIGÉ
+        function autoSave() {
+            // Sauver en localStorage immédiatement
+            saveToLocalStorage();
+            
+            // Et aussi créer un fichier de backup dans 2 secondes
+            setTimeout(() => {
+                try {
+                    saveDataToFile();
+                } catch (error) {
+                    console.error('❌ Erreur auto-save fichier:', error);
+                }
+            }, 2000);
+        }
+
+        // INITIALISATION DES DONNÉES - CORRIGÉE SANS ÉCRASER
+        function initializeData() {
+            // Essayer de charger depuis localStorage d'abord
+            const hasLocalData = loadFromLocalStorage();
+            
+            if (!hasLocalData || transactions.length === 0) {
+                // Données par défaut SEULEMENT si rien n'existe
                 transactions = [
                     {
                         id: 1,
@@ -501,35 +813,37 @@
                         type: 'depense'
                     }
                 ];
-                saveTransactions();
             }
-            
-            if (savedCategories) {
-                categories = JSON.parse(savedCategories);
-            } else {
-                // Catégories par défaut
+
+            if (!hasLocalData || categories.length === 0) {
+                // Catégories complètes par défaut
                 categories = [
                     {id: 1, name: 'Loyer', icon: '🏠', color: '#FF6B6B'},
                     {id: 2, name: 'Alimentation', icon: '🛒', color: '#4ECDC4'},
                     {id: 3, name: 'Transport', icon: '🚗', color: '#45B7D1'},
                     {id: 4, name: 'Internet', icon: '📶', color: '#96CEB4'},
-                    {id: 5, name: 'Salaire', icon: '💰', color: '#27AE60'}
+                    {id: 5, name: 'Salaire', icon: '💰', color: '#27AE60'},
+                    {id: 6, name: 'Loisirs', icon: '🎮', color: '#FF9500'},
+                    {id: 7, name: 'Santé', icon: '🏥', color: '#E74C3C'},
+                    {id: 8, name: 'Spotify', icon: '🎵', color: '#1DB954'},
+                    {id: 9, name: 'Netflix', icon: '📺', color: '#E50914'},
+                    {id: 10, name: 'Téléphone', icon: '📱', color: '#007AFF'},
+                    {id: 11, name: 'Assurance', icon: '🛡️', color: '#34495E'},
+                    {id: 12, name: 'Avocat', icon: '⚖️', color: '#8E44AD'},
+                    {id: 13, name: 'Electricité', icon: '⚡', color: '#F39C12'},
+                    {id: 14, name: 'Eau', icon: '💧', color: '#3498DB'},
+                    {id: 15, name: 'Shopping', icon: '🛍️', color: '#FF9FF3'},
+                    {id: 16, name: 'Restaurant', icon: '🍽️', color: '#FD79A8'},
+                    {id: 17, name: 'Essence', icon: '⛽', color: '#FDCB6E'},
+                    {id: 18, name: 'Banque', icon: '🏦', color: '#6C5CE7'}
                 ];
-                saveCategories();
+                
+                // Sauver les données par défaut
+                saveToLocalStorage();
             }
-        }
 
-        function saveTransactions() {
-            localStorage.setItem('facturation_transactions', JSON.stringify(transactions));
+            console.log('📊 Données initialisées avec', transactions.length, 'transactions et', categories.length, 'catégories');
         }
-
-        function saveCategories() {
-            localStorage.setItem('facturation_categories', JSON.stringify(categories));
-        }
-
-        // Variables pour les données
-        let transactions = [];
-        let categories = [];
 
         // Fonctions utilitaires
         function getMonthName(month) {
@@ -695,7 +1009,7 @@
                         <div class="empty">
                             <div class="empty-icon">📋</div>
                             <h3>Aucune transaction</h3>
-                            <p>Ajoutez votre première transaction</p>
+                            <p>Ajoutez votre première transaction avec le bouton +</p>
                         </div>
                         ` : filtered.map(t => `
                         <div class="transaction" onclick="editTransaction(${t.id})">
@@ -735,7 +1049,7 @@
                 <div class="content">
                     <div class="summary">
                         <div class="summary-header">
-                            <h3>${getMonthName(currentMonth)} ${currentYear}</h3>
+                            <h3>Résumé ${monthFilterEnabled ? getMonthName(currentMonth) + ' ' + currentYear : 'Global'}</h3>
                             <span>${summary.count} transaction(s)</span>
                         </div>
                         <div class="stats">
@@ -756,9 +1070,9 @@
                     
                     <div class="card">
                         <div style="padding: 20px; text-align: center;">
-                            <h3>Graphiques</h3>
-                            <div style="font-size: 48px; margin: 20px 0;">📊</div>
-                            <p>Répartition par catégorie</p>
+                            <h3>📊 Dashboard Détaillé</h3>
+                            <div style="font-size: 48px; margin: 20px 0;">📈</div>
+                            <p>Statistiques et graphiques</p>
                         </div>
                     </div>
                 </div>
@@ -783,7 +1097,7 @@
                             </div>
                             <div class="info">
                                 <div class="name">${cat.name}</div>
-                                <div class="date">Catégorie</div>
+                                <div class="date">Catégorie personnalisée</div>
                             </div>
                             <div class="amount">
                                 <span style="color: #007AFF; font-size: 18px;">✏️</span>
@@ -804,12 +1118,29 @@
             
             document.getElementById('content').innerHTML = `
                 <div class="content">
+                    <div class="import-section">
+                        <h3 style="margin-bottom: 16px;">💾 Sauvegarde & Import</h3>
+                        
+                        <label for="import-file" class="file-label">
+                            📂 Importer un fichier de sauvegarde
+                        </label>
+                        <input type="file" id="import-file" class="file-input" accept=".json" onchange="handleFileImport(event)">
+                        
+                        <button class="btn" style="width: 100%; margin-bottom: 10px;" onclick="saveDataToFile()">
+                            💾 Sauvegarder maintenant
+                        </button>
+                        
+                        <small style="color: #666; display: block; margin-bottom: 16px;">
+                            💡 Les données sont sauvegardées automatiquement à chaque modification
+                        </small>
+                    </div>
+                
                     <div class="card">
                         <div class="transaction" onclick="exportData()">
                             <div class="icon" style="background-color: #007AFF;">📤</div>
                             <div class="info">
-                                <div class="name">Exporter</div>
-                                <div class="date">JSON ou Excel</div>
+                                <div class="name">Exporter les données</div>
+                                <div class="date">JSON ou CSV pour tableur</div>
                             </div>
                             <div class="amount">›</div>
                         </div>
@@ -818,20 +1149,305 @@
                             <div class="icon" style="background-color: #34C759;">📊</div>
                             <div class="info">
                                 <div class="name">Export Excel</div>
-                                <div class="date">Fichier .csv pour tableur</div>
+                                <div class="date">Fichier CSV pour Numbers/Excel</div>
                             </div>
                             <div class="amount">›</div>
                         </div>
                         
-                        <div class="transaction">
+                        <div class="transaction" onclick="createBackup()">
+                            <div class="icon" style="background-color: #FF9500;">🗄️</div>
+                            <div class="info">
+                                <div class="name">Sauvegarde complète</div>
+                                <div class="date">Fichier de backup horodaté</div>
+                            </div>
+                            <div class="amount">›</div>
+                        </div>
+                        
+                        <div class="transaction" onclick="showStatistics()">
                             <div class="icon" style="background-color: #FF9500;">📈</div>
                             <div class="info">
                                 <div class="name">Statistiques</div>
-                                <div class="date">${transactions.length} transactions</div>
+                                <div class="date">${transactions.length} transactions • ${categories.length} catégories</div>
+                            </div>
+                            <div class="amount">›</div>
+                        </div>
+                        
+                        <div class="transaction" onclick="showResetOptions()">
+                            <div class="icon" style="background-color: #FF3B30;">🗑️</div>
+                            <div class="info">
+                                <div class="name">Reset Application</div>
+                                <div class="date">Effacer données ou remettre à zéro</div>
                             </div>
                             <div class="amount">›</div>
                         </div>
                     </div>
+                </div>
+            `;
+        }
+
+        function showResetOptions() {
+            document.getElementById('page-title').textContent = 'Reset Application';
+            document.getElementById('header-btn').innerHTML = 'Retour';
+            document.getElementById('header-btn').onclick = showSettings;
+            
+            document.getElementById('content').innerHTML = `
+                <div class="content">
+                    <div style="background: #FFF3CD; border: 1px solid #FFEAA7; border-radius: 8px; padding: 16px; margin-bottom: 20px; color: #856404;">
+                        <div style="font-size: 16px; margin-bottom: 8px;">⚠️ <strong>Attention</strong></div>
+                        <div style="font-size: 14px;">Ces actions sont irréversibles. Pensez à faire une sauvegarde avant !</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="transaction" onclick="clearTransactionsOnly()">
+                            <div class="icon" style="background-color: #FF9500;">📋</div>
+                            <div class="info">
+                                <div class="name">Effacer les transactions</div>
+                                <div class="date">Supprime toutes les transactions (garde les catégories)</div>
+                            </div>
+                            <div class="amount">›</div>
+                        </div>
+                        
+                        <div class="transaction" onclick="resetCategoriesToDefault()">
+                            <div class="icon" style="background-color: #007AFF;">📁</div>
+                            <div class="info">
+                                <div class="name">Reset catégories</div>
+                                <div class="date">Remet les 18 catégories par défaut</div>
+                            </div>
+                            <div class="amount">›</div>
+                        </div>
+                        
+                        <div class="transaction" onclick="clearEverything()">
+                            <div class="icon" style="background-color: #FF3B30;">🔄</div>
+                            <div class="info">
+                                <div class="name">Reset complet</div>
+                                <div class="date">Supprime TOUT et remet l'app à zéro</div>
+                            </div>
+                            <div class="amount">›</div>
+                        </div>
+                        
+                        <div class="transaction" onclick="addMissingCategories()">
+                            <div class="icon" style="background-color: #34C759;">➕</div>
+                            <div class="info">
+                                <div class="name">Ajouter catégories manquantes</div>
+                                <div class="date">Ajoute Spotify, Netflix, etc. sans rien supprimer</div>
+                            </div>
+                            <div class="amount">›</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function clearTransactionsOnly() {
+            if (confirm('❓ Supprimer TOUTES les transactions ?\n\n⚠️ Les catégories seront conservées.\n\nCette action est irréversible !')) {
+                transactions = [];
+                saveToLocalStorage();
+                alert('✅ Toutes les transactions ont été supprimées !');
+                showTransactions();
+            }
+        }
+
+        function resetCategoriesToDefault() {
+            if (confirm('❓ Remettre les catégories par défaut ?\n\n⚠️ Vos catégories personnalisées seront perdues.\n\nContinuer ?')) {
+                categories = [
+                    {id: 1, name: 'Loyer', icon: '🏠', color: '#FF6B6B'},
+                    {id: 2, name: 'Alimentation', icon: '🛒', color: '#4ECDC4'},
+                    {id: 3, name: 'Transport', icon: '🚗', color: '#45B7D1'},
+                    {id: 4, name: 'Internet', icon: '📶', color: '#96CEB4'},
+                    {id: 5, name: 'Salaire', icon: '💰', color: '#27AE60'},
+                    {id: 6, name: 'Loisirs', icon: '🎮', color: '#FF9500'},
+                    {id: 7, name: 'Santé', icon: '🏥', color: '#E74C3C'},
+                    {id: 8, name: 'Spotify', icon: '🎵', color: '#1DB954'},
+                    {id: 9, name: 'Netflix', icon: '📺', color: '#E50914'},
+                    {id: 10, name: 'Téléphone', icon: '📱', color: '#007AFF'},
+                    {id: 11, name: 'Assurance', icon: '🛡️', color: '#34495E'},
+                    {id: 12, name: 'Avocat', icon: '⚖️', color: '#8E44AD'},
+                    {id: 13, name: 'Electricité', icon: '⚡', color: '#F39C12'},
+                    {id: 14, name: 'Eau', icon: '💧', color: '#3498DB'},
+                    {id: 15, name: 'Shopping', icon: '🛍️', color: '#FF9FF3'},
+                    {id: 16, name: 'Restaurant', icon: '🍽️', color: '#FD79A8'},
+                    {id: 17, name: 'Essence', icon: '⛽', color: '#FDCB6E'},
+                    {id: 18, name: 'Banque', icon: '🏦', color: '#6C5CE7'}
+                ];
+                saveToLocalStorage();
+                alert('✅ Catégories remises par défaut (18 catégories) !');
+                showCategories();
+            }
+        }
+
+        function clearEverything() {
+            if (confirm('❓ Reset COMPLET de l\'application ?\n\n⚠️ TOUT sera supprimé :\n• Toutes les transactions\n• Toutes les catégories\n• Tous les paramètres\n\nL\'app sera comme neuve.\n\nÊtes-vous SÛR ?')) {
+                if (confirm('🚨 DERNIÈRE CONFIRMATION !\n\nToutes vos données seront perdues définitivement.\n\nContinuer le reset complet ?')) {
+                    try {
+                        localStorage.clear();
+                    } catch (error) {
+                        console.warn('localStorage non disponible');
+                    }
+                    
+                    // Réinitialiser les variables
+                    transactions = [];
+                    categories = [];
+                    currentView = 'transactions';
+                    monthFilterEnabled = true;
+                    currentMonth = new Date().getMonth() + 1;
+                    currentYear = new Date().getFullYear();
+                    selectedFilter = 'tous';
+                    
+                    alert('✅ Reset complet terminé ! L\'app va se recharger...');
+                    location.reload();
+                }
+            }
+        }
+
+        function addMissingCategories() {
+            const newCategories = [
+                {id: 8, name: 'Spotify', icon: '🎵', color: '#1DB954'},
+                {id: 9, name: 'Netflix', icon: '📺', color: '#E50914'},
+                {id: 10, name: 'Téléphone', icon: '📱', color: '#007AFF'},
+                {id: 11, name: 'Assurance', icon: '🛡️', color: '#34495E'},
+                {id: 12, name: 'Avocat', icon: '⚖️', color: '#8E44AD'},
+                {id: 13, name: 'Electricité', icon: '⚡', color: '#F39C12'},
+                {id: 14, name: 'Eau', icon: '💧', color: '#3498DB'},
+                {id: 15, name: 'Shopping', icon: '🛍️', color: '#FF9FF3'},
+                {id: 16, name: 'Restaurant', icon: '🍽️', color: '#FD79A8'},
+                {id: 17, name: 'Essence', icon: '⛽', color: '#FDCB6E'},
+                {id: 18, name: 'Banque', icon: '🏦', color: '#6C5CE7'}
+            ];
+            
+            let addedCount = 0;
+            newCategories.forEach(newCat => {
+                if (!categories.find(cat => cat.name === newCat.name)) {
+                    categories.push(newCat);
+                    addedCount++;
+                }
+            });
+            
+            if (addedCount > 0) {
+                saveToLocalStorage();
+                alert(`✅ ${addedCount} nouvelles catégories ajoutées !\n\nTotal : ${categories.length} catégories`);
+                showCategories();
+            } else {
+                alert('ℹ️ Toutes les catégories sont déjà présentes !');
+            }
+        }
+
+        function showStatistics() {
+            document.getElementById('page-title').textContent = 'Statistiques';
+            document.getElementById('header-btn').innerHTML = 'Retour';
+            document.getElementById('header-btn').onclick = showSettings;
+            
+            // Calculs statistiques
+            const totalTransactions = transactions.length;
+            const totalCategories = categories.length;
+            
+            const recettesTotales = transactions.filter(t => t.type === 'recette').reduce((sum, t) => sum + t.montantPaye, 0);
+            const depensesTotales = transactions.filter(t => t.type === 'depense').reduce((sum, t) => sum + t.montantPaye, 0);
+            const soldeTotal = recettesTotales - depensesTotales;
+            
+            const transactionsPaye = transactions.filter(t => t.statut === 'paye').length;
+            const transactionsAPayer = transactions.filter(t => t.statut === 'a_payer').length;
+            
+            // Moyenne par mois
+            const datesSorted = transactions.map(t => new Date(t.date)).sort((a, b) => a - b);
+            const premiereDate = datesSorted[0];
+            const derniereDate = datesSorted[datesSorted.length - 1];
+            const moisEcart = premiereDate && derniereDate ? 
+                Math.max(1, Math.round((derniereDate - premiereDate) / (1000 * 60 * 60 * 24 * 30))) : 1;
+            const moyenneParMois = Math.round(totalTransactions / moisEcart);
+            
+            // Top catégories
+            const categoriesStats = {};
+            transactions.forEach(t => {
+                if (!categoriesStats[t.category]) {
+                    categoriesStats[t.category] = { count: 0, montant: 0, icon: t.categoryIcon, color: t.categoryColor };
+                }
+                categoriesStats[t.category].count++;
+                categoriesStats[t.category].montant += t.montantPaye;
+            });
+            
+            const topCategories = Object.entries(categoriesStats)
+                .sort((a, b) => b[1].count - a[1].count)
+                .slice(0, 5);
+            
+            document.getElementById('content').innerHTML = `
+                <div class="content">
+                    <div class="summary">
+                        <h3 style="text-align: center; margin-bottom: 16px;">📊 Statistiques Générales</h3>
+                        <div class="stats">
+                            <div class="stat">
+                                <div class="stat-value">${totalTransactions}</div>
+                                <div class="stat-label">Transactions</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${totalCategories}</div>
+                                <div class="stat-label">Catégories</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${moyenneParMois}</div>
+                                <div class="stat-label">Par mois</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="margin-bottom: 16px;">
+                        <div style="padding: 20px;">
+                            <h3 style="margin-bottom: 16px;">💰 Résumé Financier</h3>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span>Total Recettes:</span>
+                                <span class="green" style="font-weight: bold;">${recettesTotales} CHF</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span>Total Dépenses:</span>
+                                <span class="red" style="font-weight: bold;">${depensesTotales} CHF</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 12px;">
+                                <span style="font-weight: bold;">Solde Global:</span>
+                                <span class="${soldeTotal >= 0 ? 'green' : 'red'}" style="font-weight: bold;">${soldeTotal} CHF</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="margin-bottom: 16px;">
+                        <div style="padding: 20px;">
+                            <h3 style="margin-bottom: 16px;">📈 Statuts des Transactions</h3>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span>Payées:</span>
+                                <span class="green" style="font-weight: bold;">${transactionsPaye}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>À payer:</span>
+                                <span class="orange" style="font-weight: bold;">${transactionsAPayer}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div style="padding: 20px;">
+                            <h3 style="margin-bottom: 16px;">🏆 Top 5 Catégories</h3>
+                            ${topCategories.length === 0 ? '<p style="text-align: center; color: #666;">Aucune donnée</p>' : 
+                                topCategories.map((cat, index) => `
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                        <div style="display: flex; align-items: center;">
+                                            <div class="icon" style="background-color: ${cat[1].color}; width: 32px; height: 32px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 16px;">
+                                                ${cat[1].icon}
+                                            </div>
+                                            <span>${cat[0]}</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-weight: bold;">${cat[1].count} transactions</div>
+                                            <div style="font-size: 12px; color: #666;">${cat[1].montant} CHF</div>
+                                        </div>
+                                    </div>
+                                `).join('')
+                            }
+                        </div>
+                    </div>
+                    
+                    ${premiereDate && derniereDate ? `
+                    <div style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
+                        Période: ${formatDate(premiereDate.toISOString().split('T')[0])} - ${formatDate(derniereDate.toISOString().split('T')[0])}
+                    </div>
+                    ` : ''}
                 </div>
             `;
         }
@@ -846,12 +1462,12 @@
             document.getElementById('content').innerHTML = `
                 <div class="content">
                     <div class="form-section">
-                        <div class="form-title">Détails</div>
+                        <div class="form-title">Détails de la transaction</div>
                         
                         <div class="form-group">
                             <label class="label">Catégorie</label>
                             <select class="input" id="category">
-                                <option value="">Choisir...</option>
+                                <option value="">Choisir une catégorie...</option>
                                 ${categories.map(cat => `
                                     <option value="${cat.name}">${cat.icon} ${cat.name}</option>
                                 `).join('')}
@@ -859,34 +1475,35 @@
                         </div>
                         
                         <div class="form-group">
-                            <label class="label">Montant</label>
-                            <input type="number" class="input" id="amount" placeholder="0.00 CHF" step="0.01">
+                            <label class="label">Montant (CHF)</label>
+                            <input type="number" class="input" id="amount" placeholder="0.00" step="0.01" min="0">
                         </div>
                         
                         <div class="form-group">
                             <label class="label">Date</label>
-                            <input type="date" class="input" id="date">
+                            <input type="date" class="input" id="date" value="${new Date().toISOString().split('T')[0]}">
                             <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">
-                                💡 Vide = "À payer" | Date passée = "Payé" | Date future = "À payer"
+                                💡 Date passée = "Payé" | Date future = "À payer"
                             </small>
                         </div>
                         
                         <div class="form-group">
                             <label class="label">Type</label>
                             <select class="input" id="type">
-                                <option value="depense">Dépense</option>
-                                <option value="recette">Recette</option>
+                                <option value="depense">💸 Dépense</option>
+                                <option value="recette">💰 Recette</option>
                             </select>
                         </div>
                     </div>
                     
-                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px;" onclick="saveTransaction()">
-                        Enregistrer
+                    <button class="btn" style="width: calc(100% - 40px); margin: 0 20px; padding: 16px; font-size: 16px;" onclick="saveTransaction()">
+                        💾 Enregistrer la transaction
                     </button>
                 </div>
             `;
         }
 
+        // FORMULAIRES CATÉGORIES
         function showAddCategory() {
             editingCategoryId = null;
             document.getElementById('page-title').textContent = 'Nouvelle Catégorie';
@@ -896,22 +1513,25 @@
             document.getElementById('content').innerHTML = `
                 <div class="content">
                     <div class="form-section">
-                        <div class="form-title">Détails</div>
+                        <div class="form-title">Détails de la catégorie</div>
                         
                         <div class="form-group">
                             <label class="label">Nom</label>
-                            <input type="text" class="input" id="cat-name" placeholder="Nom de la catégorie">
+                            <input type="text" class="input" id="cat-name" placeholder="Ex: Restaurant, Essence...">
                         </div>
                         
                         <div class="form-group">
                             <label class="label">Icône (emoji)</label>
-                            <input type="text" class="input" id="cat-icon" placeholder="🏠" maxlength="2">
+                            <input type="text" class="input" id="cat-icon" placeholder="🍔" maxlength="2">
+                            <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">
+                                💡 Tapez un emoji ou copiez-en un depuis votre clavier
+                            </small>
                         </div>
                         
                         <div class="form-group">
                             <label class="label">Couleur</label>
                             <div class="color-picker">
-                                <div class="color-option" style="background: #FF6B6B" onclick="selectColor('#FF6B6B')"></div>
+                                <div class="color-option selected" style="background: #FF6B6B" onclick="selectColor('#FF6B6B')"></div>
                                 <div class="color-option" style="background: #4ECDC4" onclick="selectColor('#4ECDC4')"></div>
                                 <div class="color-option" style="background: #45B7D1" onclick="selectColor('#45B7D1')"></div>
                                 <div class="color-option" style="background: #96CEB4" onclick="selectColor('#96CEB4')"></div>
@@ -926,75 +1546,8 @@
                         </div>
                     </div>
                     
-                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px;" onclick="saveCategory()">
-                        Enregistrer
-                    </button>
-                </div>
-            `;
-            
-            // Sélectionner la première couleur par défaut
-            setTimeout(() => {
-                document.querySelector('.color-option').classList.add('selected');
-            }, 100);
-        }
-
-        // ÉDITION
-        function editTransaction(id) {
-            const transaction = transactions.find(t => t.id === id);
-            if (!transaction) return;
-            
-            editingTransactionId = id;
-            document.getElementById('page-title').textContent = 'Modifier Transaction';
-            document.getElementById('header-btn').innerHTML = 'Annuler';
-            document.getElementById('header-btn').onclick = showTransactions;
-            
-            document.getElementById('content').innerHTML = `
-                <div class="content">
-                    <div class="form-section">
-                        <div class="form-title">Modification</div>
-                        
-                        <div class="form-group">
-                            <label class="label">Catégorie</label>
-                            <select class="input" id="category">
-                                <option value="">Choisir...</option>
-                                ${categories.map(cat => `
-                                    <option value="${cat.name}" ${transaction.category === cat.name ? 'selected' : ''}>${cat.icon} ${cat.name}</option>
-                                `).join('')}
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="label">Montant</label>
-                            <input type="number" class="input" id="amount" placeholder="0.00 CHF" step="0.01" value="${transaction.montantPrevu}">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="label">Date</label>
-                            <input type="date" class="input" id="date" value="${transaction.statut === 'a_payer' ? '' : transaction.date}">
-                            <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">
-                                💡 Vide = "À payer" | Date passée = "Payé" | Date future = "À payer"
-                            </small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="label">Type</label>
-                            <select class="input" id="type">
-                                <option value="depense" ${transaction.type === 'depense' ? 'selected' : ''}>Dépense</option>
-                                <option value="recette" ${transaction.type === 'recette' ? 'selected' : ''}>Recette</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px; margin-bottom: 12px;" onclick="saveTransaction()">
-                        💾 Enregistrer les modifications
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px; background: #FF3B30; margin-bottom: 12px;" onclick="deleteTransaction(${id})">
-                        🗑️ Supprimer cette transaction
-                    </button>
-                    
-                    <button class="btn btn-outline" style="width: 100%; padding: 16px; font-size: 16px;" onclick="showTransactions()">
-                        ← Retour à la liste
+                    <button class="btn" style="width: calc(100% - 40px); margin: 0 20px; padding: 16px; font-size: 16px;" onclick="saveCategory()">
+                        💾 Enregistrer la catégorie
                     </button>
                 </div>
             `;
@@ -1042,97 +1595,19 @@
                         </div>
                     </div>
                     
-                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px; margin-bottom: 12px;" onclick="saveCategory()">
+                    <button class="btn" style="width: calc(100% - 40px); margin: 0 20px 12px 20px; padding: 16px; font-size: 16px;" onclick="saveCategory()">
                         💾 Enregistrer les modifications
                     </button>
                     
-                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px; background: #FF3B30; margin-bottom: 12px;" onclick="deleteCategory(${id})">
+                    <button class="btn" style="width: calc(100% - 40px); margin: 0 20px 12px 20px; padding: 16px; font-size: 16px; background: #FF3B30;" onclick="deleteCategory(${id})">
                         🗑️ Supprimer cette catégorie
                     </button>
                     
-                    <button class="btn btn-outline" style="width: 100%; padding: 16px; font-size: 16px;" onclick="showCategories()">
+                    <button class="btn btn-outline" style="width: calc(100% - 40px); margin: 0 20px; padding: 16px; font-size: 16px;" onclick="showCategories()">
                         ← Retour à la liste
                     </button>
                 </div>
             `;
-        }
-
-        // SAUVEGARDE
-        function saveTransaction() {
-            const category = document.getElementById('category').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-            const date = document.getElementById('date').value;
-            const type = document.getElementById('type').value;
-            
-            if (!category || !amount) {
-                alert('Veuillez remplir au moins la catégorie et le montant');
-                return;
-            }
-            
-            const categoryData = categories.find(c => c.name === category);
-            if (!categoryData) {
-                alert('Catégorie non trouvée');
-                return;
-            }
-            
-            // Logique pour le statut et la date
-            let finalDate, finalStatus;
-            
-            if (date) {
-                finalDate = date;
-                const dateObj = new Date(date);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                dateObj.setHours(0, 0, 0, 0);
-                
-                if (dateObj <= today) {
-                    finalStatus = 'paye';
-                } else {
-                    finalStatus = 'a_payer';
-                }
-            } else {
-                finalDate = new Date().toISOString().split('T')[0];
-                finalStatus = 'a_payer';
-            }
-            
-            if (editingTransactionId) {
-                // Mode modification
-                const transactionIndex = transactions.findIndex(t => t.id === editingTransactionId);
-                if (transactionIndex !== -1) {
-                    transactions[transactionIndex] = {
-                        ...transactions[transactionIndex],
-                        date: finalDate,
-                        category: categoryData.name,
-                        categoryIcon: categoryData.icon,
-                        categoryColor: categoryData.color,
-                        montantPrevu: amount,
-                        montantPaye: finalStatus === 'paye' ? amount : 0,
-                        statut: finalStatus,
-                        type: type
-                    };
-                    saveTransactions();
-                    alert('Transaction modifiée !');
-                }
-            } else {
-                // Mode ajout
-                const newTransaction = {
-                    id: Date.now(),
-                    date: finalDate,
-                    category: categoryData.name,
-                    categoryIcon: categoryData.icon,
-                    categoryColor: categoryData.color,
-                    montantPrevu: amount,
-                    montantPaye: finalStatus === 'paye' ? amount : 0,
-                    statut: finalStatus,
-                    type: type
-                };
-                
-                transactions.unshift(newTransaction);
-                saveTransactions();
-                alert('Transaction ajoutée !');
-            }
-            
-            showTransactions();
         }
 
         function saveCategory() {
@@ -1141,7 +1616,7 @@
             const color = document.getElementById('cat-color').value;
             
             if (!name || !icon) {
-                alert('Veuillez remplir le nom et l\'icône');
+                alert('❌ Veuillez remplir le nom et l\'icône !');
                 return;
             }
             
@@ -1166,9 +1641,7 @@
                         }
                     });
                     
-                    saveCategories();
-                    saveTransactions();
-                    alert('Catégorie modifiée !');
+                    alert('✅ Catégorie modifiée avec succès !');
                 }
             } else {
                 // Mode ajout
@@ -1180,21 +1653,16 @@
                 };
                 
                 categories.push(newCategory);
-                saveCategories();
-                alert('Catégorie ajoutée !');
+                alert('✅ Catégorie ajoutée avec succès !');
             }
             
+            // Auto-save après modification
+            autoSave();
+            
+            // Retour immédiat à la vue catégories
+            currentView = 'categories';
             showCategories();
-        }
-
-        // SUPPRESSION
-        function deleteTransaction(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette transaction ?')) {
-                transactions = transactions.filter(t => t.id !== id);
-                saveTransactions();
-                showTransactions();
-                alert('Transaction supprimée !');
-            }
+            updateTabs();
         }
 
         function deleteCategory(id) {
@@ -1202,25 +1670,186 @@
             const usedInTransactions = transactions.some(t => t.category === category.name);
             
             if (usedInTransactions) {
-                alert('Impossible de supprimer cette catégorie car elle est utilisée dans des transactions.');
+                alert('❌ Impossible de supprimer cette catégorie car elle est utilisée dans des transactions.');
                 return;
             }
             
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
+            if (confirm('❓ Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
                 categories = categories.filter(c => c.id !== id);
-                saveCategories();
+                alert('✅ Catégorie supprimée !');
+                
+                // Auto-save après suppression
+                autoSave();
+                
+                // Retour immédiat à la vue catégories
+                currentView = 'categories';
                 showCategories();
-                alert('Catégorie supprimée !');
+                updateTabs();
             }
         }
 
-        // UTILITAIRES
+        function editTransaction(id) {
+            const transaction = transactions.find(t => t.id === id);
+            if (!transaction) return;
+            
+            editingTransactionId = id;
+            document.getElementById('page-title').textContent = 'Modifier Transaction';
+            document.getElementById('header-btn').innerHTML = 'Annuler';
+            document.getElementById('header-btn').onclick = showTransactions;
+            
+            document.getElementById('content').innerHTML = `
+                <div class="content">
+                    <div class="form-section">
+                        <div class="form-title">Modification</div>
+                        
+                        <div class="form-group">
+                            <label class="label">Catégorie</label>
+                            <select class="input" id="category">
+                                <option value="">Choisir une catégorie...</option>
+                                ${categories.map(cat => `
+                                    <option value="${cat.name}" ${transaction.category === cat.name ? 'selected' : ''}>${cat.icon} ${cat.name}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Montant (CHF)</label>
+                            <input type="number" class="input" id="amount" placeholder="0.00" step="0.01" value="${transaction.montantPrevu}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Date</label>
+                            <input type="date" class="input" id="date" value="${transaction.date}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Type</label>
+                            <select class="input" id="type">
+                                <option value="depense" ${transaction.type === 'depense' ? 'selected' : ''}>💸 Dépense</option>
+                                <option value="recette" ${transaction.type === 'recette' ? 'selected' : ''}>💰 Recette</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" style="width: calc(100% - 40px); margin: 0 20px 12px 20px; padding: 16px; font-size: 16px;" onclick="saveTransaction()">
+                        💾 Enregistrer les modifications
+                    </button>
+                    
+                    <button class="btn" style="width: calc(100% - 40px); margin: 0 20px 12px 20px; padding: 16px; font-size: 16px; background: #FF3B30;" onclick="deleteTransaction(${id})">
+                        🗑️ Supprimer cette transaction
+                    </button>
+                    
+                    <button class="btn btn-outline" style="width: calc(100% - 40px); margin: 0 20px; padding: 16px; font-size: 16px;" onclick="showTransactions()">
+                        ← Retour à la liste
+                    </button>
+                </div>
+            `;
+        }
+
+        function deleteTransaction(id) {
+            if (confirm('❓ Êtes-vous sûr de vouloir supprimer cette transaction ?')) {
+                transactions = transactions.filter(t => t.id !== id);
+                alert('✅ Transaction supprimée !');
+                
+                // Auto-save après suppression
+                autoSave();
+                
+                // Retour immédiat à la vue transactions
+                currentView = 'transactions';
+                showTransactions();
+                updateTabs();
+            }
+        }
+
         function selectColor(color) {
             document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
             event.target.classList.add('selected');
             document.getElementById('cat-color').value = color;
         }
 
+        // SAUVEGARDE
+        function saveTransaction() {
+            const category = document.getElementById('category').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const date = document.getElementById('date').value;
+            const type = document.getElementById('type').value;
+            
+            if (!category || !amount || !date) {
+                alert('❌ Veuillez remplir tous les champs obligatoires !');
+                return;
+            }
+            
+            const categoryData = categories.find(c => c.name === category);
+            if (!categoryData) {
+                alert('❌ Catégorie non trouvée !');
+                return;
+            }
+            
+            // Logique pour le statut
+            const dateObj = new Date(date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            dateObj.setHours(0, 0, 0, 0);
+            
+            const finalStatus = dateObj <= today ? 'paye' : 'a_payer';
+            
+            if (editingTransactionId) {
+                // Mode modification
+                const transactionIndex = transactions.findIndex(t => t.id === editingTransactionId);
+                if (transactionIndex !== -1) {
+                    transactions[transactionIndex] = {
+                        ...transactions[transactionIndex],
+                        date: date,
+                        category: categoryData.name,
+                        categoryIcon: categoryData.icon,
+                        categoryColor: categoryData.color,
+                        montantPrevu: amount,
+                        montantPaye: finalStatus === 'paye' ? amount : 0,
+                        statut: finalStatus,
+                        type: type
+                    };
+                    alert('✅ Transaction modifiée avec succès !');
+                }
+            } else {
+                // Mode ajout
+                const newTransaction = {
+                    id: Date.now(),
+                    date: date,
+                    category: categoryData.name,
+                    categoryIcon: categoryData.icon,
+                    categoryColor: categoryData.color,
+                    montantPrevu: amount,
+                    montantPaye: finalStatus === 'paye' ? amount : 0,
+                    statut: finalStatus,
+                    type: type
+                };
+                
+                transactions.unshift(newTransaction);
+                alert('✅ Transaction ajoutée avec succès !');
+            }
+            
+            // Auto-save après modification
+            autoSave();
+            
+            // Retour immédiat à la vue transactions
+            currentView = 'transactions';
+            showTransactions();
+            updateTabs();
+        }
+
+        // FONCTIONS DE SAUVEGARDE - CORRIGÉES
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.type === 'application/json' || file.name.endsWith('.json')) {
+                    loadDataFromFile(file);
+                } else {
+                    alert('❌ Veuillez sélectionner un fichier JSON !');
+                }
+            }
+        }
+
+        // Utilitaires de navigation
         function toggleMonthFilter() {
             monthFilterEnabled = !monthFilterEnabled;
             showTransactions();
@@ -1261,83 +1890,6 @@
             showTransactions();
         }
 
-        function exportData() {
-            // Choix du format d'export
-            const format = prompt("Format d'export :\n1. JSON (sauvegarde complète)\n2. Excel (compatible tableur)\n\nTapez 1 ou 2 :", "2");
-            
-            if (format === "1") {
-                exportJSON();
-            } else if (format === "2") {
-                exportExcel();
-            }
-        }
-
-        function exportJSON() {
-            const data = {
-                transactions: transactions,
-                categories: categories,
-                exportDate: new Date().toISOString()
-            };
-            
-            const jsonString = JSON.stringify(data, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `facturation_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            alert('Export JSON réussi !');
-        }
-
-        function exportExcel() {
-            // Créer le contenu CSV compatible Excel
-            let csvContent = '\ufeff'; // BOM pour Excel
-            
-            // En-têtes
-            csvContent += 'Date,Catégorie,Type,Montant Prévu,Montant Payé,Statut,Remarques\n';
-            
-            // Données des transactions
-            transactions.forEach(t => {
-                const row = [
-                    formatDate(t.date),
-                    t.category,
-                    t.type === 'depense' ? 'Dépense' : 'Recette',
-                    t.montantPrevu.toString().replace('.', ','), // Format français
-                    t.montantPaye.toString().replace('.', ','),
-                    getStatusName(t.statut),
-                    '' // Remarques vides pour l'instant
-                ];
-                csvContent += row.map(field => `"${field}"`).join(';') + '\n';
-            });
-            
-            // Ajouter résumé en bas
-            csvContent += '\n';
-            csvContent += 'RÉSUMÉ\n';
-            const summary = calculateSummary(transactions);
-            csvContent += `"Recettes Total";${summary.recettes.toString().replace('.', ',')} CHF\n`;
-            csvContent += `"Dépenses Total";${summary.depenses.toString().replace('.', ',')} CHF\n`;
-            csvContent += `"Solde";${summary.solde.toString().replace('.', ',')} CHF\n`;
-            
-            // Télécharger
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `facturation_${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            alert('Export Excel réussi ! Ouvrez le fichier .csv avec Excel ou Numbers.');
-        }
-
         function updateTabs() {
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             const viewMap = {
@@ -1346,7 +1898,8 @@
                 'categories': 2,
                 'settings': 3
             };
-            document.querySelectorAll('.tab')[viewMap[currentView]]?.classList.add('active');
+            const activeTab = document.querySelectorAll('.tab')[viewMap[currentView]];
+            if (activeTab) activeTab.classList.add('active');
         }
 
         function getFilterName(filter) {
@@ -1381,12 +1934,23 @@
             return colors[status] || '#666';
         }
 
-        // INITIALISATION
+        // INITIALISATION - CORRIGÉE
         document.addEventListener('DOMContentLoaded', function() {
-            loadData();
+            console.log('🚀 Application Facturation avec sauvegarde hybride');
+            initializeData();
             showTransactions();
-            console.log('✅ App chargée avec localStorage');
+            
+            // Test de localStorage
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                console.log('✅ localStorage disponible');
+            } catch (e) {
+                console.warn('⚠️ localStorage non disponible - mode fichier uniquement');
+            }
         });
+
+        console.log('📱 Application Facturation - Version finale avec toutes les catégories');
     </script>
 </body>
 </html>
