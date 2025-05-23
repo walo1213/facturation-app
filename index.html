@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facturation Perso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f2f2f7;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .app {
+            max-width: 414px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            background: white;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #007AFF;
+            border: 1px solid #007AFF;
+        }
+
+        .filter-section {
+            background: #f2f2f7;
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .month-filter {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .toggle {
+            width: 50px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .toggle.active {
+            background: #007AFF;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+
+        .toggle.active::after {
+            transform: translateX(20px);
+        }
+
+        .month-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #007AFF;
+            color: white;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .month-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #007AFF;
+        }
+
+        .selectors {
+            display: flex;
+            gap: 12px;
+        }
+
+        .selector {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .chip {
+            background: #f0f0f0;
+            color: #666;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: none;
+        }
+
+        .chip.active {
+            background: #007AFF;
+            color: white;
+        }
+
+        .content {
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        .summary {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .green { color: #34C759; }
+        .red { color: #FF3B30; }
+        .orange { color: #FF9500; }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .transaction, .category-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+
+        .transaction:last-child, .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction:hover, .category-item:hover {
+            background: #f8f8f8;
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 18px;
+            color: white;
+        }
+
+        .info {
+            flex: 1;
+        }
+
+        .name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .date {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .amount {
+            text-align: right;
+        }
+
+        .value {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .status {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 414px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 8px;
+            color: #666;
+            cursor: pointer;
+            font-size: 10px;
+            border: none;
+            background: none;
+        }
+
+        .tab.active {
+            color: #007AFF;
+        }
+
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #007AFF;
+            border-radius: 28px;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,122,255,0.4);
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .color-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .color-option.selected {
+            border-color: #007AFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <div class="header">
+            <span class="title" id="page-title">Transactions</span>
+            <button class="btn" id="header-btn" onclick="exportData()">📤</button>
+        </div>
+
+        <!-- Content -->
+        <div id="content">
+            <!-- Le contenu sera généré ici -->
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTransactions()">
+                <div class="tab-icon">📋</div>
+                <div>Transactions</div>
+            </button>
+            <button class="tab" onclick="showDashboard()">
+                <div class="tab-icon">📊</div>
+                <div>Dashboard</div>
+            </button>
+            <button class="tab" onclick="showCategories()">
+                <div class="tab-icon">📁</div>
+                <div>Catégories</div>
+            </button>
+            <button class="tab" onclick="showSettings()">
+                <div class="tab-icon">⚙️</div>
+                <div>Paramètres</div>
+            </button>
+        </div>
+
+        <!-- Floating Button -->
+        <button class="floating-btn" onclick="showAddForm()">+</button>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentView = 'transactions';
+        let monthFilterEnabled = true;
+        let currentMonth = new Date().getMonth() + 1;
+        let currentYear = new Date().getFullYear();
+        let selectedFilter = 'tous';
+        let editingTransactionId = null;
+        let editingCategoryId = null;
+
+        // DONNÉES AVEC LOCALSTORAGE - PERSISTANCE GARANTIE
+        function loadData() {
+            const savedTransactions = localStorage.getItem('facturation_transactions');
+            const savedCategories = localStorage.getItem('facturation_categories');
+            
+            if (savedTransactions) {
+                transactions = JSON.parse(savedTransactions);
+            } else {
+                // Données par défaut
+                transactions = [
+                    {
+                        id: 1,
+                        date: '2024-12-01',
+                        category: 'Loyer',
+                        categoryIcon: '🏠',
+                        categoryColor: '#FF6B6B',
+                        montantPrevu: 1200,
+                        montantPaye: 1200,
+                        statut: 'paye',
+                        type: 'depense'
+                    },
+                    {
+                        id: 2,
+                        date: '2024-12-03',
+                        category: 'Alimentation',
+                        categoryIcon: '🛒',
+                        categoryColor: '#4ECDC4',
+                        montantPrevu: 150,
+                        montantPaye: 150,
+                        statut: 'paye',
+                        type: 'depense'
+                    },
+                    {
+                        id: 3,
+                        date: '2024-12-01',
+                        category: 'Salaire',
+                        categoryIcon: '💰',
+                        categoryColor: '#27AE60',
+                        montantPrevu: 5500,
+                        montantPaye: 5500,
+                        statut: 'paye',
+                        type: 'recette'
+                    },
+                    {
+                        id: 4,
+                        date: '2024-12-10',
+                        category: 'Transport',
+                        categoryIcon: '🚗',
+                        categoryColor: '#45B7D1',
+                        montantPrevu: 60,
+                        montantPaye: 0,
+                        statut: 'a_payer',
+                        type: 'depense'
+                    }
+                ];
+                saveTransactions();
+            }
+            
+            if (savedCategories) {
+                categories = JSON.parse(savedCategories);
+            } else {
+                // Catégories par défaut
+                categories = [
+                    {id: 1, name: 'Loyer', icon: '🏠', color: '#FF6B6B'},
+                    {id: 2, name: 'Alimentation', icon: '🛒', color: '#4ECDC4'},
+                    {id: 3, name: 'Transport', icon: '🚗', color: '#45B7D1'},
+                    {id: 4, name: 'Internet', icon: '📶', color: '#96CEB4'},
+                    {id: 5, name: 'Salaire', icon: '💰', color: '#27AE60'}
+                ];
+                saveCategories();
+            }
+        }
+
+        function saveTransactions() {
+            localStorage.setItem('facturation_transactions', JSON.stringify(transactions));
+        }
+
+        function saveCategories() {
+            localStorage.setItem('facturation_categories', JSON.stringify(categories));
+        }
+
+        // Variables pour les données
+        let transactions = [];
+        let categories = [];
+
+        // Fonctions utilitaires
+        function getMonthName(month) {
+            const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                          'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            return months[month - 1];
+        }
+
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('fr-FR');
+        }
+
+        function getFilteredTransactions() {
+            let filtered = [...transactions];
+            
+            if (monthFilterEnabled) {
+                filtered = filtered.filter(t => {
+                    const date = new Date(t.date);
+                    return date.getMonth() + 1 === currentMonth && 
+                           date.getFullYear() === currentYear;
+                });
+            }
+            
+            if (selectedFilter !== 'tous') {
+                switch (selectedFilter) {
+                    case 'depenses':
+                        filtered = filtered.filter(t => t.type === 'depense');
+                        break;
+                    case 'recettes':
+                        filtered = filtered.filter(t => t.type === 'recette');
+                        break;
+                    case 'paye':
+                        filtered = filtered.filter(t => t.statut === 'paye');
+                        break;
+                    case 'a_payer':
+                        filtered = filtered.filter(t => t.statut === 'a_payer');
+                        break;
+                    case 'impaye':
+                        filtered = filtered.filter(t => t.statut === 'impaye');
+                        break;
+                }
+            }
+            
+            return filtered;
+        }
+
+        function calculateSummary(data) {
+            const recettes = data.filter(t => t.type === 'recette').reduce((sum, t) => {
+                return sum + (t.statut === 'a_payer' ? t.montantPrevu : t.montantPaye);
+            }, 0);
+            
+            const depenses = data.filter(t => t.type === 'depense').reduce((sum, t) => {
+                return sum + (t.statut === 'a_payer' ? t.montantPrevu : t.montantPaye);
+            }, 0);
+            
+            return {
+                recettes,
+                depenses,
+                solde: recettes - depenses,
+                count: data.length
+            };
+        }
+
+        function getFilterCount(filter) {
+            const baseData = monthFilterEnabled ? 
+                transactions.filter(t => {
+                    const date = new Date(t.date);
+                    return date.getMonth() + 1 === currentMonth && 
+                           date.getFullYear() === currentYear;
+                }) : transactions;
+                
+            switch (filter) {
+                case 'tous': return baseData.length;
+                case 'depenses': return baseData.filter(t => t.type === 'depense').length;
+                case 'recettes': return baseData.filter(t => t.type === 'recette').length;
+                case 'paye': return baseData.filter(t => t.statut === 'paye').length;
+                case 'a_payer': return baseData.filter(t => t.statut === 'a_payer').length;
+                case 'impaye': return baseData.filter(t => t.statut === 'impaye').length;
+                default: return 0;
+            }
+        }
+
+        // VUES PRINCIPALES
+        function showTransactions() {
+            currentView = 'transactions';
+            updateTabs();
+            
+            document.getElementById('page-title').textContent = 'Transactions';
+            document.getElementById('header-btn').innerHTML = '📤';
+            document.getElementById('header-btn').onclick = exportData;
+            
+            const filtered = getFilteredTransactions();
+            const summary = calculateSummary(filtered);
+            
+            document.getElementById('content').innerHTML = `
+                <div class="filter-section">
+                    <div class="month-filter">
+                        <div class="toggle-row">
+                            <span>Filtrer par mois</span>
+                            <div class="toggle ${monthFilterEnabled ? 'active' : ''}" onclick="toggleMonthFilter()"></div>
+                        </div>
+                        
+                        ${monthFilterEnabled ? `
+                        <div class="month-nav">
+                            <button class="nav-btn" onclick="previousMonth()">‹</button>
+                            <div class="month-title">${getMonthName(currentMonth)} ${currentYear}</div>
+                            <button class="nav-btn" onclick="nextMonth()">›</button>
+                        </div>
+                        
+                        <div class="selectors">
+                            <select class="selector" onchange="changeMonth(this.value)">
+                                ${Array.from({length: 12}, (_, i) => `
+                                    <option value="${i+1}" ${currentMonth === i+1 ? 'selected' : ''}>
+                                        ${getMonthName(i+1)}
+                                    </option>
+                                `).join('')}
+                            </select>
+                            <select class="selector" onchange="changeYear(this.value)">
+                                ${[2022,2023,2024,2025,2026].map(year => `
+                                    <option value="${year}" ${currentYear === year ? 'selected' : ''}>${year}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="chips">
+                        ${['tous', 'depenses', 'recettes', 'paye', 'a_payer', 'impaye'].map(filter => `
+                            <button class="chip ${selectedFilter === filter ? 'active' : ''}" 
+                                    onclick="setFilter('${filter}')">
+                                ${getFilterName(filter)} (${getFilterCount(filter)})
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="content">
+                    ${monthFilterEnabled ? `
+                    <div class="summary">
+                        <div class="summary-header">
+                            <h3>${getMonthName(currentMonth)} ${currentYear}</h3>
+                            <span>${summary.count} transaction(s)</span>
+                        </div>
+                        <div class="stats">
+                            <div class="stat">
+                                <div class="stat-value green">${summary.recettes} CHF</div>
+                                <div class="stat-label">Recettes</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value red">${summary.depenses} CHF</div>
+                                <div class="stat-label">Dépenses</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value ${summary.solde >= 0 ? 'green' : 'red'}">${summary.solde} CHF</div>
+                                <div class="stat-label">Solde</div>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="card">
+                        ${filtered.length === 0 ? `
+                        <div class="empty">
+                            <div class="empty-icon">📋</div>
+                            <h3>Aucune transaction</h3>
+                            <p>Ajoutez votre première transaction</p>
+                        </div>
+                        ` : filtered.map(t => `
+                        <div class="transaction" onclick="editTransaction(${t.id})">
+                            <div class="icon" style="background-color: ${t.categoryColor}">
+                                ${t.categoryIcon}
+                            </div>
+                            <div class="info">
+                                <div class="name">${t.category}</div>
+                                <div class="date">${formatDate(t.date)}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="value ${t.type === 'recette' ? 'green' : 'red'}">
+                                    ${t.type === 'recette' ? '+' : ''}${t.statut === 'a_payer' ? t.montantPrevu : t.montantPaye} CHF
+                                </div>
+                                <div class="status" style="background: ${getStatusColor(t.statut)}">
+                                    ${getStatusName(t.statut)}
+                                </div>
+                            </div>
+                        </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function showDashboard() {
+            currentView = 'dashboard';
+            updateTabs();
+            
+            document.getElementById('page-title').textContent = 'Dashboard';
+            document.getElementById('header-btn').innerHTML = '📅';
+            
+            const filtered = getFilteredTransactions();
+            const summary = calculateSummary(filtered);
+            
+            document.getElementById('content').innerHTML = `
+                <div class="content">
+                    <div class="summary">
+                        <div class="summary-header">
+                            <h3>${getMonthName(currentMonth)} ${currentYear}</h3>
+                            <span>${summary.count} transaction(s)</span>
+                        </div>
+                        <div class="stats">
+                            <div class="stat">
+                                <div class="stat-value green">${summary.recettes} CHF</div>
+                                <div class="stat-label">Recettes</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value red">${summary.depenses} CHF</div>
+                                <div class="stat-label">Dépenses</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value ${summary.solde >= 0 ? 'green' : 'red'}">${summary.solde} CHF</div>
+                                <div class="stat-label">Solde</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div style="padding: 20px; text-align: center;">
+                            <h3>Graphiques</h3>
+                            <div style="font-size: 48px; margin: 20px 0;">📊</div>
+                            <p>Répartition par catégorie</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showCategories() {
+            currentView = 'categories';
+            updateTabs();
+            
+            document.getElementById('page-title').textContent = 'Catégories';
+            document.getElementById('header-btn').innerHTML = '+';
+            document.getElementById('header-btn').onclick = showAddCategory;
+            
+            document.getElementById('content').innerHTML = `
+                <div class="content">
+                    <div class="card">
+                        ${categories.map(cat => `
+                        <div class="category-item" onclick="editCategory(${cat.id})">
+                            <div class="icon" style="background-color: ${cat.color}">
+                                ${cat.icon}
+                            </div>
+                            <div class="info">
+                                <div class="name">${cat.name}</div>
+                                <div class="date">Catégorie</div>
+                            </div>
+                            <div class="amount">
+                                <span style="color: #007AFF; font-size: 18px;">✏️</span>
+                            </div>
+                        </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function showSettings() {
+            currentView = 'settings';
+            updateTabs();
+            
+            document.getElementById('page-title').textContent = 'Paramètres';
+            document.getElementById('header-btn').innerHTML = '';
+            
+            document.getElementById('content').innerHTML = `
+                <div class="content">
+                    <div class="card">
+                        <div class="transaction" onclick="exportData()">
+                            <div class="icon" style="background-color: #007AFF;">📤</div>
+                            <div class="info">
+                                <div class="name">Exporter</div>
+                                <div class="date">JSON ou Excel</div>
+                            </div>
+                            <div class="amount">›</div>
+                        </div>
+                        
+                        <div class="transaction" onclick="exportExcel()">
+                            <div class="icon" style="background-color: #34C759;">📊</div>
+                            <div class="info">
+                                <div class="name">Export Excel</div>
+                                <div class="date">Fichier .csv pour tableur</div>
+                            </div>
+                            <div class="amount">›</div>
+                        </div>
+                        
+                        <div class="transaction">
+                            <div class="icon" style="background-color: #FF9500;">📈</div>
+                            <div class="info">
+                                <div class="name">Statistiques</div>
+                                <div class="date">${transactions.length} transactions</div>
+                            </div>
+                            <div class="amount">›</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // FORMULAIRES 
+        function showAddForm() {
+            editingTransactionId = null;
+            document.getElementById('page-title').textContent = 'Nouvelle Transaction';
+            document.getElementById('header-btn').innerHTML = 'Annuler';
+            document.getElementById('header-btn').onclick = showTransactions;
+            
+            document.getElementById('content').innerHTML = `
+                <div class="content">
+                    <div class="form-section">
+                        <div class="form-title">Détails</div>
+                        
+                        <div class="form-group">
+                            <label class="label">Catégorie</label>
+                            <select class="input" id="category">
+                                <option value="">Choisir...</option>
+                                ${categories.map(cat => `
+                                    <option value="${cat.name}">${cat.icon} ${cat.name}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Montant</label>
+                            <input type="number" class="input" id="amount" placeholder="0.00 CHF" step="0.01">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Date</label>
+                            <input type="date" class="input" id="date">
+                            <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">
+                                💡 Vide = "À payer" | Date passée = "Payé" | Date future = "À payer"
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Type</label>
+                            <select class="input" id="type">
+                                <option value="depense">Dépense</option>
+                                <option value="recette">Recette</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px;" onclick="saveTransaction()">
+                        Enregistrer
+                    </button>
+                </div>
+            `;
+        }
+
+        function showAddCategory() {
+            editingCategoryId = null;
+            document.getElementById('page-title').textContent = 'Nouvelle Catégorie';
+            document.getElementById('header-btn').innerHTML = 'Annuler';
+            document.getElementById('header-btn').onclick = showCategories;
+            
+            document.getElementById('content').innerHTML = `
+                <div class="content">
+                    <div class="form-section">
+                        <div class="form-title">Détails</div>
+                        
+                        <div class="form-group">
+                            <label class="label">Nom</label>
+                            <input type="text" class="input" id="cat-name" placeholder="Nom de la catégorie">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Icône (emoji)</label>
+                            <input type="text" class="input" id="cat-icon" placeholder="🏠" maxlength="2">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Couleur</label>
+                            <div class="color-picker">
+                                <div class="color-option" style="background: #FF6B6B" onclick="selectColor('#FF6B6B')"></div>
+                                <div class="color-option" style="background: #4ECDC4" onclick="selectColor('#4ECDC4')"></div>
+                                <div class="color-option" style="background: #45B7D1" onclick="selectColor('#45B7D1')"></div>
+                                <div class="color-option" style="background: #96CEB4" onclick="selectColor('#96CEB4')"></div>
+                                <div class="color-option" style="background: #FECA57" onclick="selectColor('#FECA57')"></div>
+                                <div class="color-option" style="background: #FF9FF3" onclick="selectColor('#FF9FF3')"></div>
+                                <div class="color-option" style="background: #54A0FF" onclick="selectColor('#54A0FF')"></div>
+                                <div class="color-option" style="background: #5F27CD" onclick="selectColor('#5F27CD')"></div>
+                                <div class="color-option" style="background: #27AE60" onclick="selectColor('#27AE60')"></div>
+                                <div class="color-option" style="background: #E74C3C" onclick="selectColor('#E74C3C')"></div>
+                            </div>
+                            <input type="hidden" id="cat-color" value="#FF6B6B">
+                        </div>
+                    </div>
+                    
+                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px;" onclick="saveCategory()">
+                        Enregistrer
+                    </button>
+                </div>
+            `;
+            
+            // Sélectionner la première couleur par défaut
+            setTimeout(() => {
+                document.querySelector('.color-option').classList.add('selected');
+            }, 100);
+        }
+
+        // ÉDITION
+        function editTransaction(id) {
+            const transaction = transactions.find(t => t.id === id);
+            if (!transaction) return;
+            
+            editingTransactionId = id;
+            document.getElementById('page-title').textContent = 'Modifier Transaction';
+            document.getElementById('header-btn').innerHTML = 'Annuler';
+            document.getElementById('header-btn').onclick = showTransactions;
+            
+            document.getElementById('content').innerHTML = `
+                <div class="content">
+                    <div class="form-section">
+                        <div class="form-title">Modification</div>
+                        
+                        <div class="form-group">
+                            <label class="label">Catégorie</label>
+                            <select class="input" id="category">
+                                <option value="">Choisir...</option>
+                                ${categories.map(cat => `
+                                    <option value="${cat.name}" ${transaction.category === cat.name ? 'selected' : ''}>${cat.icon} ${cat.name}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Montant</label>
+                            <input type="number" class="input" id="amount" placeholder="0.00 CHF" step="0.01" value="${transaction.montantPrevu}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Date</label>
+                            <input type="date" class="input" id="date" value="${transaction.statut === 'a_payer' ? '' : transaction.date}">
+                            <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">
+                                💡 Vide = "À payer" | Date passée = "Payé" | Date future = "À payer"
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Type</label>
+                            <select class="input" id="type">
+                                <option value="depense" ${transaction.type === 'depense' ? 'selected' : ''}>Dépense</option>
+                                <option value="recette" ${transaction.type === 'recette' ? 'selected' : ''}>Recette</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px; margin-bottom: 12px;" onclick="saveTransaction()">
+                        💾 Enregistrer les modifications
+                    </button>
+                    
+                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px; background: #FF3B30; margin-bottom: 12px;" onclick="deleteTransaction(${id})">
+                        🗑️ Supprimer cette transaction
+                    </button>
+                    
+                    <button class="btn btn-outline" style="width: 100%; padding: 16px; font-size: 16px;" onclick="showTransactions()">
+                        ← Retour à la liste
+                    </button>
+                </div>
+            `;
+        }
+
+        function editCategory(id) {
+            const category = categories.find(c => c.id === id);
+            if (!category) return;
+            
+            editingCategoryId = id;
+            document.getElementById('page-title').textContent = 'Modifier Catégorie';
+            document.getElementById('header-btn').innerHTML = 'Annuler';
+            document.getElementById('header-btn').onclick = showCategories;
+            
+            document.getElementById('content').innerHTML = `
+                <div class="content">
+                    <div class="form-section">
+                        <div class="form-title">Modification</div>
+                        
+                        <div class="form-group">
+                            <label class="label">Nom</label>
+                            <input type="text" class="input" id="cat-name" placeholder="Nom de la catégorie" value="${category.name}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Icône (emoji)</label>
+                            <input type="text" class="input" id="cat-icon" placeholder="🏠" maxlength="2" value="${category.icon}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Couleur</label>
+                            <div class="color-picker">
+                                <div class="color-option ${category.color === '#FF6B6B' ? 'selected' : ''}" style="background: #FF6B6B" onclick="selectColor('#FF6B6B')"></div>
+                                <div class="color-option ${category.color === '#4ECDC4' ? 'selected' : ''}" style="background: #4ECDC4" onclick="selectColor('#4ECDC4')"></div>
+                                <div class="color-option ${category.color === '#45B7D1' ? 'selected' : ''}" style="background: #45B7D1" onclick="selectColor('#45B7D1')"></div>
+                                <div class="color-option ${category.color === '#96CEB4' ? 'selected' : ''}" style="background: #96CEB4" onclick="selectColor('#96CEB4')"></div>
+                                <div class="color-option ${category.color === '#FECA57' ? 'selected' : ''}" style="background: #FECA57" onclick="selectColor('#FECA57')"></div>
+                                <div class="color-option ${category.color === '#FF9FF3' ? 'selected' : ''}" style="background: #FF9FF3" onclick="selectColor('#FF9FF3')"></div>
+                                <div class="color-option ${category.color === '#54A0FF' ? 'selected' : ''}" style="background: #54A0FF" onclick="selectColor('#54A0FF')"></div>
+                                <div class="color-option ${category.color === '#5F27CD' ? 'selected' : ''}" style="background: #5F27CD" onclick="selectColor('#5F27CD')"></div>
+                                <div class="color-option ${category.color === '#27AE60' ? 'selected' : ''}" style="background: #27AE60" onclick="selectColor('#27AE60')"></div>
+                                <div class="color-option ${category.color === '#E74C3C' ? 'selected' : ''}" style="background: #E74C3C" onclick="selectColor('#E74C3C')"></div>
+                            </div>
+                            <input type="hidden" id="cat-color" value="${category.color}">
+                        </div>
+                    </div>
+                    
+                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px; margin-bottom: 12px;" onclick="saveCategory()">
+                        💾 Enregistrer les modifications
+                    </button>
+                    
+                    <button class="btn" style="width: 100%; padding: 16px; font-size: 16px; background: #FF3B30; margin-bottom: 12px;" onclick="deleteCategory(${id})">
+                        🗑️ Supprimer cette catégorie
+                    </button>
+                    
+                    <button class="btn btn-outline" style="width: 100%; padding: 16px; font-size: 16px;" onclick="showCategories()">
+                        ← Retour à la liste
+                    </button>
+                </div>
+            `;
+        }
+
+        // SAUVEGARDE
+        function saveTransaction() {
+            const category = document.getElementById('category').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const date = document.getElementById('date').value;
+            const type = document.getElementById('type').value;
+            
+            if (!category || !amount) {
+                alert('Veuillez remplir au moins la catégorie et le montant');
+                return;
+            }
+            
+            const categoryData = categories.find(c => c.name === category);
+            if (!categoryData) {
+                alert('Catégorie non trouvée');
+                return;
+            }
+            
+            // Logique pour le statut et la date
+            let finalDate, finalStatus;
+            
+            if (date) {
+                finalDate = date;
+                const dateObj = new Date(date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                dateObj.setHours(0, 0, 0, 0);
+                
+                if (dateObj <= today) {
+                    finalStatus = 'paye';
+                } else {
+                    finalStatus = 'a_payer';
+                }
+            } else {
+                finalDate = new Date().toISOString().split('T')[0];
+                finalStatus = 'a_payer';
+            }
+            
+            if (editingTransactionId) {
+                // Mode modification
+                const transactionIndex = transactions.findIndex(t => t.id === editingTransactionId);
+                if (transactionIndex !== -1) {
+                    transactions[transactionIndex] = {
+                        ...transactions[transactionIndex],
+                        date: finalDate,
+                        category: categoryData.name,
+                        categoryIcon: categoryData.icon,
+                        categoryColor: categoryData.color,
+                        montantPrevu: amount,
+                        montantPaye: finalStatus === 'paye' ? amount : 0,
+                        statut: finalStatus,
+                        type: type
+                    };
+                    saveTransactions();
+                    alert('Transaction modifiée !');
+                }
+            } else {
+                // Mode ajout
+                const newTransaction = {
+                    id: Date.now(),
+                    date: finalDate,
+                    category: categoryData.name,
+                    categoryIcon: categoryData.icon,
+                    categoryColor: categoryData.color,
+                    montantPrevu: amount,
+                    montantPaye: finalStatus === 'paye' ? amount : 0,
+                    statut: finalStatus,
+                    type: type
+                };
+                
+                transactions.unshift(newTransaction);
+                saveTransactions();
+                alert('Transaction ajoutée !');
+            }
+            
+            showTransactions();
+        }
+
+        function saveCategory() {
+            const name = document.getElementById('cat-name').value;
+            const icon = document.getElementById('cat-icon').value;
+            const color = document.getElementById('cat-color').value;
+            
+            if (!name || !icon) {
+                alert('Veuillez remplir le nom et l\'icône');
+                return;
+            }
+            
+            if (editingCategoryId) {
+                // Mode modification
+                const categoryIndex = categories.findIndex(c => c.id === editingCategoryId);
+                if (categoryIndex !== -1) {
+                    const oldName = categories[categoryIndex].name;
+                    categories[categoryIndex] = {
+                        ...categories[categoryIndex],
+                        name: name,
+                        icon: icon,
+                        color: color
+                    };
+                    
+                    // Mettre à jour les transactions qui utilisent cette catégorie
+                    transactions.forEach(t => {
+                        if (t.category === oldName) {
+                            t.category = name;
+                            t.categoryIcon = icon;
+                            t.categoryColor = color;
+                        }
+                    });
+                    
+                    saveCategories();
+                    saveTransactions();
+                    alert('Catégorie modifiée !');
+                }
+            } else {
+                // Mode ajout
+                const newCategory = {
+                    id: Date.now(),
+                    name: name,
+                    icon: icon,
+                    color: color
+                };
+                
+                categories.push(newCategory);
+                saveCategories();
+                alert('Catégorie ajoutée !');
+            }
+            
+            showCategories();
+        }
+
+        // SUPPRESSION
+        function deleteTransaction(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette transaction ?')) {
+                transactions = transactions.filter(t => t.id !== id);
+                saveTransactions();
+                showTransactions();
+                alert('Transaction supprimée !');
+            }
+        }
+
+        function deleteCategory(id) {
+            const category = categories.find(c => c.id === id);
+            const usedInTransactions = transactions.some(t => t.category === category.name);
+            
+            if (usedInTransactions) {
+                alert('Impossible de supprimer cette catégorie car elle est utilisée dans des transactions.');
+                return;
+            }
+            
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
+                categories = categories.filter(c => c.id !== id);
+                saveCategories();
+                showCategories();
+                alert('Catégorie supprimée !');
+            }
+        }
+
+        // UTILITAIRES
+        function selectColor(color) {
+            document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.getElementById('cat-color').value = color;
+        }
+
+        function toggleMonthFilter() {
+            monthFilterEnabled = !monthFilterEnabled;
+            showTransactions();
+        }
+
+        function previousMonth() {
+            if (currentMonth === 1) {
+                currentMonth = 12;
+                currentYear--;
+            } else {
+                currentMonth--;
+            }
+            showTransactions();
+        }
+
+        function nextMonth() {
+            if (currentMonth === 12) {
+                currentMonth = 1;
+                currentYear++;
+            } else {
+                currentMonth++;
+            }
+            showTransactions();
+        }
+
+        function changeMonth(month) {
+            currentMonth = parseInt(month);
+            showTransactions();
+        }
+
+        function changeYear(year) {
+            currentYear = parseInt(year);
+            showTransactions();
+        }
+
+        function setFilter(filter) {
+            selectedFilter = filter;
+            showTransactions();
+        }
+
+        function exportData() {
+            // Choix du format d'export
+            const format = prompt("Format d'export :\n1. JSON (sauvegarde complète)\n2. Excel (compatible tableur)\n\nTapez 1 ou 2 :", "2");
+            
+            if (format === "1") {
+                exportJSON();
+            } else if (format === "2") {
+                exportExcel();
+            }
+        }
+
+        function exportJSON() {
+            const data = {
+                transactions: transactions,
+                categories: categories,
+                exportDate: new Date().toISOString()
+            };
+            
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `facturation_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Export JSON réussi !');
+        }
+
+        function exportExcel() {
+            // Créer le contenu CSV compatible Excel
+            let csvContent = '\ufeff'; // BOM pour Excel
+            
+            // En-têtes
+            csvContent += 'Date,Catégorie,Type,Montant Prévu,Montant Payé,Statut,Remarques\n';
+            
+            // Données des transactions
+            transactions.forEach(t => {
+                const row = [
+                    formatDate(t.date),
+                    t.category,
+                    t.type === 'depense' ? 'Dépense' : 'Recette',
+                    t.montantPrevu.toString().replace('.', ','), // Format français
+                    t.montantPaye.toString().replace('.', ','),
+                    getStatusName(t.statut),
+                    '' // Remarques vides pour l'instant
+                ];
+                csvContent += row.map(field => `"${field}"`).join(';') + '\n';
+            });
+            
+            // Ajouter résumé en bas
+            csvContent += '\n';
+            csvContent += 'RÉSUMÉ\n';
+            const summary = calculateSummary(transactions);
+            csvContent += `"Recettes Total";${summary.recettes.toString().replace('.', ',')} CHF\n`;
+            csvContent += `"Dépenses Total";${summary.depenses.toString().replace('.', ',')} CHF\n`;
+            csvContent += `"Solde";${summary.solde.toString().replace('.', ',')} CHF\n`;
+            
+            // Télécharger
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `facturation_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Export Excel réussi ! Ouvrez le fichier .csv avec Excel ou Numbers.');
+        }
+
+        function updateTabs() {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            const viewMap = {
+                'transactions': 0,
+                'dashboard': 1,
+                'categories': 2,
+                'settings': 3
+            };
+            document.querySelectorAll('.tab')[viewMap[currentView]]?.classList.add('active');
+        }
+
+        function getFilterName(filter) {
+            const names = {
+                'tous': 'Tous',
+                'depenses': 'Dépenses', 
+                'recettes': 'Recettes',
+                'paye': 'Payé',
+                'a_payer': 'À payer',
+                'impaye': 'Impayé'
+            };
+            return names[filter];
+        }
+
+        function getStatusName(status) {
+            const names = {
+                'paye': 'Payé',
+                'a_payer': 'À payer',
+                'impaye': 'Impayé',
+                'retard': 'En retard'
+            };
+            return names[status] || status;
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'paye': '#34C759',
+                'a_payer': '#FF3B30',
+                'impaye': '#FF9500',
+                'retard': '#FF3B30'
+            };
+            return colors[status] || '#666';
+        }
+
+        // INITIALISATION
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            showTransactions();
+            console.log('✅ App chargée avec localStorage');
+        });
+    </script>
+</body>
+</html>
