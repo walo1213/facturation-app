@@ -1059,11 +1059,11 @@
                                             </div>
 
                                             <div>
-                                                <label className="text-xs text-gray-500 uppercase font-medium">Catégorie</label>
+                                                <label className="text-xs text-gray-500 uppercase font-medium">{t('category')}</label>
                                                 <CategorySelect
                                                     value={newTransaction.categorie}
                                                     onChange={(cat) => setNewTransaction({...newTransaction, categorie: cat})}
-                                                    categories={categories}
+                                                    categories={categories.sort()}
                                                 />
                                             </div>
 
